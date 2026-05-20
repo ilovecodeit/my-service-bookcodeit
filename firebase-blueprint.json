@@ -1,0 +1,30 @@
+{
+  "entities": {
+    "booking": {
+      "title": "Booking",
+      "description": "Represents a resource booking.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "date": { "type": "string", "format": "date" },
+        "startTime": { "type": "string" },
+        "endTime": { "type": "string" },
+        "item": { "type": "string" },
+        "user": { "type": "string" },
+        "status": { 
+          "type": "string", 
+          "enum": ["confirmed", "cancelled", "completed", "pending"] 
+        },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["date", "startTime", "endTime", "item", "user", "status", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/bookings": {
+      "schema": "booking",
+      "description": "A collection of all bookings."
+    }
+  }
+}

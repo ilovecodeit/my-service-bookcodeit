@@ -1,0 +1,67 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  
+  /* Primary & Action Colors */
+  --color-primary: #041627;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #1a2b3c;
+  --color-on-primary-container: #8192a7;
+  
+  /* Surface & Background */
+  --color-surface: #fbf9fa;
+  --color-surface-dim: #dbd9db;
+  --color-surface-bright: #fbf9fa;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f5f3f4;
+  --color-surface-container: #efedef;
+  --color-surface-container-high: #e9e7e9;
+  --color-surface-container-highest: #e4e2e3;
+  --color-on-surface: #1b1c1d;
+  --color-on-surface-variant: #44474c;
+  
+  /* Secondary & Tertiary */
+  --color-secondary: #5d5f5f;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #dcdddd;
+  --color-on-secondary-container: #5f6161;
+  
+  --color-error: #ba1a1a;
+  --color-on-error: #ffffff;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+  
+  /* Outline */
+  --color-outline: #74777d;
+  --color-outline-variant: #c4c6cd;
+
+  --radius-xs: 0.125rem;
+  --radius-DEFAULT: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+}
+
+body {
+  @apply bg-surface text-on-surface font-sans antialiased;
+}
+
+@layer base {
+  h1 { @apply text-[40px] font-bold leading-tight tracking-[-0.02em]; }
+  h2 { @apply text-[30px] font-semibold leading-snug tracking-[-0.01em]; }
+  h3 { @apply text-[24px] font-semibold leading-normal; }
+}
+
+.markdown-body {
+  @apply text-on-surface leading-relaxed;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

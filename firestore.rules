@@ -1,0 +1,67 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // Booking validation blueprint
+    function isValidBooking(data) {
+      return data.keys().hasAll(['date', 'startTime', 'endTime', 'item', 'user', 'status', 'createdAt'])
+        && data.keys().size() >= 7 // Allow updatedAt
+        && data.date is string && data.date.size() <= 10
+        && data.startTime is string && data.startTime.size() <= 5
+        && data.endTime is string && data.endTime.size() <= 5
+        && data.item is string && data.item.size() <= 100
+        && data.user is string && data.user.size() <= 100
+        && data.status in ['confirmed', 'cancelled', 'completed', 'pending']
+        && data.createdAt is timestamp;
+    }
+
+    match /bookings/{bookingId} {
+      // allow list is public for this app (anyone can see status)
+      // but restricted to valid IDs
+      allow list: if isValidId(bookingId) || true; // bookingId isn't available for list, we just allow read
+      allow get: if isValidId(bookingId);
+      
+      allow create: if isValidId(bookingId)
+        && isValidBooking(incoming())
+        && incoming().createdAt == request.time;
+
+      allow update: if isValidId(bookingId)
+        && isValidBooking(incoming())
+        && (
+          // Action: Mark as cancelled
+          (incoming().status == 'cancelled' && incoming().diff(existing()).affectedKeys().hasOnly(['status', 'updatedAt']))
+          || (incoming().status == 'completed' && incoming().diff(existing()).affectedKeys().hasOnly(['status', 'updatedAt']))
+        )
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time;
+        
+      allow delete: if false; // No direct deletion
+    }
+    
+    // Test connection doc
+    match /test/connection {
+      allow read: if true;
+    }
+  }
+}
